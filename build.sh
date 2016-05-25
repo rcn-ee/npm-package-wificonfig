@@ -25,7 +25,16 @@ npm_git_install () {
 	fi
 
 	cd /usr/local/lib/node_modules/
-	tar -cJvf ${npm_project}-${package_version}-${git_version}-${node_version}.tar.xz ${npm_project}/
+	if [ -f ${npm_project}-${package_version}-${git_version}-${node_version}.tar.xz ] ; then
+		rm -rf ${npm_project}-${package_version}-${git_version}-${node_version}.tar.xz || true
+	fi
+	tar -cJf ${npm_project}-${package_version}-${git_version}-${node_version}.tar.xz ${npm_project}/
+	cd -
+
+	if [ ! -f ./deploy/${npm_project}-${package_version}-${git_version}-${node_version}.tar.xz ] ; then
+		cp -v ${npm_project}/${npm_project}-${package_version}-${git_version}-${node_version}.tar.xz ./deploy/
+		echo "New Build: ${npm_project}-${package_version}-${git_version}-${node_version}.tar.xz"
+	fi
 }
 
 npm_install () {
