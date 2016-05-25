@@ -1,5 +1,10 @@
 #!/bin/bash -e
 
+npm_project="wificonfig"
+git_project="wifidog-server"
+git_branch="BBGW"
+git_user="https://github.com/Pillar1989"
+
 export NODE_PATH=/usr/local/lib/node_modules
 
 npm_options="--unsafe-perm=true --progress=false --loglevel=error --prefix /usr/local"
@@ -9,31 +14,31 @@ npm_git_install () {
 		rm -rf /usr/local/lib/node_modules/${npm_project}/ || true
 	fi
 
-	wrepo="wifidog-server"
-	if [ -d /tmp/${wrepo}/ ] ; then
-		rm -rf /tmp/${wrepo}/ || true
+	if [ -d /tmp/${git_project}/ ] ; then
+		rm -rf /tmp/${git_project}/ || true
 	fi
 
-	git clone -b BBGW https://github.com/Pillar1989/${wrepo} /tmp/${wrepo}
-	if [ -d /tmp/${wrepo}/ ] ; then
-		cd /tmp/${wrepo}/
+	git clone -b ${git_branch} ${git_user}/${git_project} /tmp/${git_project}
+	if [ -d /tmp/${git_project}/ ] ; then
+		cd /tmp/${git_project}/
 		package_version=$(cat package.json | grep version | awk -F '"' '{print $4}' || true)
 		git_version=$(git rev-parse --short HEAD)
 		TERM=dumb ${node_bin} ${npm_bin} install -g ${npm_options}
 		cd -
-		rm -rf /tmp/${wrepo}/
+		rm -rf /tmp/${git_project}/
 	fi
 
+	wfile="${npm_project}-${package_version}-${git_version}-${node_version}"
 	cd /usr/local/lib/node_modules/
-	if [ -f ${npm_project}-${package_version}-${git_version}-${node_version}.tar.xz ] ; then
-		rm -rf ${npm_project}-${package_version}-${git_version}-${node_version}.tar.xz || true
+	if [ -f ${wfile}.tar.xz ] ; then
+		rm -rf ${wfile}.tar.xz || true
 	fi
-	tar -cJf ${npm_project}-${package_version}-${git_version}-${node_version}.tar.xz ${npm_project}/
+	tar -cJf ${wfile}.tar.xz ${npm_project}/
 	cd -
 
-	if [ ! -f ./deploy/${npm_project}-${package_version}-${git_version}-${node_version}.tar.xz ] ; then
-		cp -v ${npm_project}/${npm_project}-${package_version}-${git_version}-${node_version}.tar.xz ./deploy/
-		echo "New Build: ${npm_project}-${package_version}-${git_version}-${node_version}.tar.xz"
+	if [ ! -f ./deploy/${wfile}.tar.xz ] ; then
+		cp -v /usr/local/lib/node_modules/${wfile}.tar.xz ./deploy/
+		echo "New Build: ${wfile}.tar.xz"
 	fi
 }
 
@@ -47,7 +52,6 @@ npm_install () {
 	echo "npm: [`${node_bin} ${npm_bin} --version`]"
 	echo "node: [`${node_bin} --version`]"
 
-	npm_project="wificonfig"
 	npm_git_install
 }
 
