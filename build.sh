@@ -1,13 +1,13 @@
 #!/bin/bash -e
 
-npm_project="wificonfig"
-git_project="wifidog-server"
-git_branch="BBGW"
-git_user="https://github.com/Pillar1989"
+DIR=$PWD
 
 export NODE_PATH=/usr/local/lib/node_modules
 
 npm_options="--unsafe-perm=true --progress=false --loglevel=error --prefix /usr/local"
+
+echo "Resetting: /usr/local/lib/node_modules/"
+rm -rf /usr/local/lib/node_modules/* || true
 
 npm_git_install () {
 	if [ -d /usr/local/lib/node_modules/${npm_project}/ ] ; then
@@ -28,7 +28,7 @@ npm_git_install () {
 		rm -rf /tmp/${git_project}/
 	fi
 
-	wfile="${npm_project}-${package_version}-${git_version}-${node_version}"
+	wfile="${npm_project}-${package_version}-${git_version}-${node_version}-${git_branch}"
 	cd /usr/local/lib/node_modules/
 	if [ -f ${wfile}.tar.xz ] ; then
 		rm -rf ${wfile}.tar.xz || true
@@ -52,6 +52,13 @@ npm_install () {
 	echo "npm: [`${node_bin} ${npm_bin} --version`]"
 	echo "node: [`${node_bin} --version`]"
 
+	npm_project="wificonfig"
+	git_project="wifidog-server"
+	#git_branch="BBGW"
+	#git_user="https://github.com/Pillar1989"
+
+	git_branch="bbgw-bone101-dir-change"
+	git_user="https://github.com/rcn-ee"
 	npm_git_install
 }
 
