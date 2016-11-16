@@ -42,15 +42,15 @@ npm_git_install () {
 		case "${node_version}" in
 		v0.12.*)
 			echo "Patching ${git_project} for ${node_version}"
-			exit 2
+			patch -p1 < ${DIR}/patches/node-bonescript-v0.12.x.diff
 			;;
 		v4.*)
 			echo "Patching ${git_project} for ${node_version}"
-			exit 2
+			patch -p1 < ${DIR}/patches/node-bonescript-v4.x.diff
 			;;
 		v6.*)
 			echo "Patching ${git_project} for ${node_version}"
-			exit 2
+			patch -p1 < ${DIR}/patches/node-bonescript-v6.x.diff
 			;;
 		esac
 
